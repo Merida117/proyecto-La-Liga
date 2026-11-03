@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaLiga EA Sports 2025-2026</title>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0d1117; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        
+        /* Contenedor tipo Smartphone (Estilo de tus prototipos) */
+        .app-card { background: #5c0627; border-radius: 28px; width: 100%; max-width: 380px; padding: 20px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+        .app-header { text-align: center; margin-bottom: 15px; }
+        .app-title { font-size: 1.2rem; font-weight: bold; margin: 0; }
+        .badge-campeon { background-color: #eab308; color: #000; font-size: 0.75rem; font-weight: bold; padding: 3px 10px; border-radius: 12px; display: inline-block; margin-top: 5px; text-transform: uppercase; }
+        
+        /* Capa de Presentación: Barra de búsqueda y Validaciones */
+        .search-container { margin-bottom: 15px; }
+        .search-box { display: flex; gap: 8px; }
+        .search-input { flex: 1; padding: 10px 14px; border-radius: 12px; border: none; background: #ffffff; color: #333; font-size: 0.85rem; outline: none; }
+        .search-btn { background: #3b82f6; border: none; color: white; padding: 10px 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+        .search-btn:hover { background: #2563eb; }
+        .error-message { color: #f87171; background: rgba(0,0,0,0.3); font-size: 0.75rem; padding: 6px 10px; border-radius: 8px; margin-top: 6px; display: none; text-align: center; }
+
+        /* Pantalla/Contenedor principal de partidos */
+        .screen-container { background: #f3f4f6; border-radius: 18px; padding: 12px; color: #1f2937; min-height: 280px; max-height: 340px; overflow-y: auto; }
+        .match-card { background: white; border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .team-info { font-weight: 600; font-size: 0.85rem; color: #111827; }
+        .match-score { background: #f3f4f6; padding: 4px 10px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; text-align: center; }
+        .match-status { font-size: 0.65rem; color: #6b7280; display: block; text-align: center; font-weight: normal; }
+
+        /* Barra de navegación inferior (Fiel a tus capturas) */
+        .nav-bar { display: flex; justify-content: space-around; margin-top: 15px; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 16px; }
+        .nav-item { font-size: 0.75rem; color: #d1d5db; text-decoration: none; text-align: center; font-weight: 500; cursor: pointer; opacity: 0.7; }
+        .nav-item.active { color: white; font-weight: bold; opacity: 1; border-bottom: 2px solid white; padding-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-card">
+        <!-- Encabezado del Sistema -->
+        <div class="app-header">
+            <h1 class="app-title">LaLiga EA Sports 2025-2026</h1>
+            <span class="badge-campeon">🏆 FC BARCELONA CAMPEÓN</span>
+        </div>
+
+        <!-- CAPA DE PRESENTACIÓN: Entrada de datos del usuario -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="txtBuscador" class="search-input" placeholder="Buscar equipo...">
+                <button class="search-btn" onclick="uiFiltrarPartidos()">Buscar</button>
+            </div>
+            <!-- Control de error por mala captura (Requerimiento de la tarea) -->
+            <div id="lblError" class="error-message">⚠ Ingresa solo letras (sin números ni símbolos).</div>
+        </div>
+
+        <!-- CAPA DE PRESENTACIÓN: Área donde se renderizan los datos recibidos de la Lógica -->
+        <div class="screen-container" id="listaPartidos">
+            <!-- Render dinámico desde JS -->
+        </div>
+
+        <!-- Navegación inferior (Estilo de tus maquetas) -->
+        <div class="nav-bar">
+            <span class="nav-item active">Partidos</span>
+            <span class="nav-item">Posiciones</span>
+            <span class="nav-item">Pichichi</span>
+            <span class="nav-item">Plantilla</span>
+        </div>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. CAPA DE ACCESO A DATOS (Model/Data Layer)
+           Representa los datos almacenados en el sistema[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)
+           ========================================================================== */
+        const baseDatosPartidos = [
+            { local: "FC Barcelona", visitante: "Getafe", golesL: 3, golesV: 0, estado: "Finalizado" },
+            { local: "Real Madrid", visitante: "Villarreal", golesL: 1, golesV: 0, estado: "Finalizado" },
+            { local: "Elche C. F.", visitante: "Celta de Vigo", golesL: 0, golesV: 0, estado: "Hoy 20:00" },
+            { local: "Real Sociedad", visitante: "Deportivo", golesL: 3, golesV: 2, estado: "Finalizado" }
+        ];
+
+        /* ==========================================================================
+           2. CAPA DE LÓGICA DE NEGOCIO (Business Layer)
+           Reglas de negocio, cálculos y validaciones de entrada[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)
+           ========================================================================== */
+        
+        // Regla: Validar la entrada para prevenir errores de captura[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)
+        function validarTextoEntrada(cadena) {
+            if (cadena === "") return true; // Permitir búsqueda vacía (muestra todos)
+            const patronLetras = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+            return patronLetras.test(cadena);
+        }
+
+        // Regla: Procesar y filtrar los partidos según la búsqueda
+        function obtenerPartidosProcesados(filtro) {
+            return baseDatosPartidos.filter(partido => 
+                partido.local.toLowerCase().includes(filtro.toLowerCase()) ||
+                partido.visitante.toLowerCase().includes(filtro.toLowerCase())
+            );
+        }
+
+        /* ==========================================================================
+           3. CAPA DE PRESENTACIÓN (Presentation Layer / UI)
+           Manejo de interfaz, eventos del usuario y renderizado[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span)[span_18](start_span)[span_18](end_span)
+           ========================================================================== */
+        
+        function uiFiltrarPartidos() {
+            const inputTexto = document.getElementById("txtBuscador").value.trim();
+            const lblError = document.getElementById("lblError");
+
+            // Validar errores de captura usando la capa de negocio
+            if (!validarTextoEntrada(inputTexto)) {
+                lblError.style.display = "block"; // Muestra alerta de error
+                return;
+            } else {
+                lblError.style.display = "none";
+            }
+
+            // Consultar datos procesados a la capa de negocio
+            const resultados = obtenerPartidosProcesados(inputTexto);
+            uiRenderizarLista(resultados);
+        }
+
+        function uiRenderizarLista(partidos) {
+            const contenedor = document.getElementById("listaPartidos");
+            contenedor.innerHTML = "";
+
+            if (partidos.length === 0) {
+                contenedor.innerHTML = `<p style="text-align:center; color:#9ca3af; font-size:0.85rem; margin-top:40px;">No se encontraron partidos para ese equipo.</p>`;
+                return;
+            }
+
+            partidos.forEach(item => {
+                contenedor.innerHTML += `
+                    <div class="match-card">
+                        <div class="team-info">
+                            <div>${item.local}</div>
+                            <div style="margin-top:4px;">${item.visitante}</div>
+                        </div>
+                        <div class="match-score">
+                            ${item.golesL} - ${item.golesV}
+                            <span class="match-status">${item.estado}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Carga inicial de la pantalla
+        window.onload = () => uiRenderizarLista(baseDatosPartidos);
+    </script>
+</body>
+</html>

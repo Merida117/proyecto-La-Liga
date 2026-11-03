@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LaLiga - Resultados en Vivo</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #1e293b; text-align: center; }
+        .match-card { background: #1e1b4b; color: white; padding: 15px; border-radius: 6px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .search-box { margin-bottom: 15px; display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; }
+        button { background: #3b82f6; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #2563eb; }
+        .error-msg { color: #ef4444; font-size: 14px; margin-top: 5px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>LaLiga - Partidos de la Jornada</h2>
+        
+        <!-- ========================================== -->
+        <!-- CAPA DE PRESENTACIÓN (Interfaz de Usuario) -->
+        <!-- ========================================== -->
+        <div class="search-box">
+            <input type="text" id="inputEquipo" placeholder="Buscar equipo (Ej. Real Madrid)...">
+            <button onclick="ejecutarBusqueda()">Buscar</button>
+        </div>
+        <div id="alertaError" class="error-msg">Por favor, ingresa un nombre válido (sin números ni caracteres extraños).</div>
+
+        <div id="resultadoPantalla">
+            <!-- Aquí se pintarán los datos que devuelve la capa de negocio -->
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CAPA DE LÓGICA DE NEGOCIO (Procesamiento y Reglas)
+        // ==========================================
+        
+        // Simulación de base de datos o repositorio de partidos
+        const baseDatosPartidos = [
+            { local: "Real Madrid", visitante: "Barcelona", golesLocal: 2, golesVisitante: 1, estado: "Finalizado" },
+            { local: "Atlético de Madrid", visitante: "Sevilla", golesLocal: 1, golesVisitante: 1, estado: "En Juego" },
+            { local: "Real Sociedad", visitante: "Valencia", golesLocal: 0, golesVisitante: 2, estado: "Por Jugar" }
+        ];
+
+        // Regla de Negocio: Validar la entrada del usuario en la capa de presentación antes de procesar
+        function validarEntrada(texto) {
+            const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/; // Solo permite letras y espacios
+            return regex.test(texto);
+        }
+
+        // Función principal que une Presentación y Negocio
+        function ejecutarBusqueda() {
+            const input = document.getElementById("inputEquipo").value.trim();
+            const alerta = document.getElementById("alertaError");
+            
+            // Validación de errores de captura en Capa de Presentación
+            if (input !== "" && !validarEntrada(input)) {
+                alerta.style.display = "block";
+                document.getElementById("resultadoPantallahemer").innerHTML = "";
+                return;
+            } else {
+                alerta.style.display = "none";
+            }
+
+            // Procesamiento en la Capa de Negocio (Filtrar y aplicar reglas)
+            const partidosFiltrados = baseDatosPartidos.filter(partido => 
+                partido.local.toLowerCase().includes(input.toLowerCase()) || 
+                partido.visitante.toLowerCase().includes(input.toLowerCase())
+            );
+
+            mostrarEnPantalla(partidosFiltrados);
+        }
+
+        // Capa de Presentación: Renderizar los resultados procesados al usuario
+        function mostrarEnPantalla(partidos) {
+            const contenedor = document.getElementById("resultadoPantalla");
+            contenedor.innerHTML = "";
+
+            if (partidos.length === 0) {
+                contenedor.innerHTML = "<p style='text-align:center; color:#64748b;'>No se encontraron partidos para ese equipo.</p>";
+                return;
+            }
+
+            partidos.forEach(p => {
+                contenedor.innerHTML += `
+                    <div class="match-card">
+                        <div><strong>${p.local}</strong> vs <strong>${p.visitante}</strong></div>
+                        <div>${p.golesLocal} - ${p.golesVisitante} <br><small>(${p.estado})</small></div>
+                    </div>
+                `;
+            });
+        }
+
+        // Carga inicial al abrir la pantalla
+        mostrarEnPantalla(baseDatosPartidos);
+    </script>
+</body>
+</html>
